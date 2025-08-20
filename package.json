@@ -23,6 +23,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "3.0.2",
     "dotenv": "17.2.1",
     "drizzle-orm": "0.44.4",
     "next": "15.5.0",
