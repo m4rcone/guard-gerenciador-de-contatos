@@ -11,8 +11,8 @@
     "database:generate": "drizzle-kit generate",
     "database:migrate": "drizzle-kit migrate",
     "database:studio": "drizzle-kit studio",
-    "test": "jest",
-    "test:watch": "jest --watchAll",
+    "test": "jest --runInBand",
+    "test:watch": "jest --watchAll --runInBand",
     "lint:eslint:check": "next lint",
     "lint:prettier:check": "prettier . --check",
     "lint:prettier:fix": "prettier . --write",
@@ -24,6 +24,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "3.0.2",
+    "cookie": "1.0.2",
     "dotenv": "17.2.1",
     "drizzle-orm": "0.44.4",
     "next": "15.5.0",
@@ -41,6 +42,7 @@
     "eslint-config-next": "15.5.0",
     "jest": "30.0.5",
     "prettier": "3.6.2",
+    "set-cookie-parser": "2.7.1",
     "ts-node": "10.9.2",
     "tsx": "4.20.4",
     "typescript": "5.9.2"

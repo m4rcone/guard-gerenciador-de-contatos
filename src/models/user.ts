@@ -1,5 +1,5 @@
 import database from "infra/database";
-import { ValidationError } from "infra/errors";
+import { NotFoundError, ValidationError } from "infra/errors";
 import password from "models/password";
 import { randomUUID } from "node:crypto";
 
@@ -8,6 +8,68 @@ export type UserInputValues = {
   email: string;
   password: string;
 };
+
+async function findOneById(id: string) {
+  const userFound = await runSelectQuery(id);
+
+  return userFound;
+
+  async function runSelectQuery(id: string) {
+    const result = await database.query({
+      text: `
+        SELECT 
+          *
+        FROM 
+          users
+        WHERE
+          id = $1
+        LIMIT
+          1
+        ;`,
+      values: [id],
+    });
+
+    if (result.rowCount === 0) {
+      throw new NotFoundError({
+        message: "O id informado não foi encontrado no sistema.",
+        action: "Verifique o id informado e tente novamente.",
+      });
+    }
+
+    return result.rows[0];
+  }
+}
+
+async function findOneByEmail(email: string) {
+  const userFound = await runSelectQuery(email);
+
+  return userFound;
+
+  async function runSelectQuery(email: string) {
+    const result = await database.query({
+      text: `
+        SELECT
+          *
+        FROM 
+          users
+        WHERE
+          LOWER(email) = LOWER($1)
+        LIMIT
+          1
+        ;`,
+      values: [email],
+    });
+
+    if (result.rowCount === 0) {
+      throw new NotFoundError({
+        message: "O email informado não foi encontrado no sistema.",
+        action: "Verifique o email informado e tente novamente.",
+      });
+    }
+
+    return result.rows[0];
+  }
+}
 
 async function create(userInputValues: UserInputValues) {
   await validateUniqueEmail(userInputValues.email);
@@ -66,6 +128,8 @@ async function hashPasswordInObject(userInputValues: UserInputValues) {
 }
 
 const user = {
+  findOneById,
+  findOneByEmail,
   create,
 };
 
