@@ -1,11 +1,9 @@
-import { FormState, SignupFormSchema } from "app/lib/definitions";
+import { FormState, SigninFormSchema } from "app/lib/definitions";
 
-export async function signup(_state: FormState, formData: FormData) {
-  const validatedFields = SignupFormSchema.safeParse({
-    name: formData.get("name"),
+export async function signin(_state: FormState, formData: FormData) {
+  const validatedFields = SigninFormSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
-    repeat: formData.get("repeat"),
   });
 
   if (!validatedFields.success) {
@@ -14,12 +12,12 @@ export async function signup(_state: FormState, formData: FormData) {
     };
   }
 
-  const response = await fetch("http://localhost:3000/api/users", {
+  const response = await fetch("http://localhost:3000/api/sessions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ ...validatedFields.data, repeat: undefined }),
+    body: JSON.stringify(validatedFields.data),
   });
 
   const responseBody = await response.json();

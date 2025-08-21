@@ -24,6 +24,14 @@ export const SignupFormSchema = z
     path: ["password"],
   });
 
+export const SigninFormSchema = z.object({
+  email: z.email({ message: "Por favor, insira seu e-mail" }).trim(),
+  password: z
+    .string()
+    .min(1, { message: "Por favor, insira sua senha" })
+    .trim(),
+});
+
 export type FormState =
   | {
       errors?: {
