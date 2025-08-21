@@ -1,6 +1,7 @@
 import database from "infra/database";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { drizzle } from "drizzle-orm/node-postgres";
+import session from "models/session";
 
 async function clearDatabase() {
   await database.query(
@@ -19,9 +20,14 @@ async function runMigrations() {
   client?.end();
 }
 
+async function createSession(userId: string) {
+  return session.create(userId);
+}
+
 const orchestrator = {
   clearDatabase,
   runMigrations,
+  createSession,
 };
 
 export default orchestrator;

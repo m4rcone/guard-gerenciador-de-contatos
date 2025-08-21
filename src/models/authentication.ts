@@ -4,13 +4,13 @@ import { NotFoundError, UnauthorizedError } from "infra/errors";
 
 async function getAuthenticatedUser(
   providedEmail: string,
-  providedPassword: string
+  providedPassword: string,
 ) {
   try {
     const storedUser = await user.findOneByEmail(providedEmail);
     const correctPasswordMatch = await password.compare(
       providedPassword,
-      storedUser.password
+      storedUser.password,
     );
 
     if (!correctPasswordMatch) {

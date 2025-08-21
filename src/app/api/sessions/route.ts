@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     const authenticatedUser = await authentication.getAuthenticatedUser(
       userInputValues.email,
-      userInputValues.password
+      userInputValues.password,
     );
     const newSession = await session.create(authenticatedUser.id);
     const response = NextResponse.json(newSession, { status: 201 });

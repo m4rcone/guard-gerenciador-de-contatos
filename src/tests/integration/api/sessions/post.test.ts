@@ -7,9 +7,9 @@ beforeAll(async () => {
   await orchestrator.runMigrations();
 });
 
-describe("POST /api/v1/sessions", () => {
+describe("POST /api/sessions", () => {
   test("With incorrect `email` but correct `password`", async () => {
-    const newUser = await fetch("http://localhost:3000/api/users", {
+    await fetch("http://localhost:3000/api/users", {
       method: "POST",
       headers: {
         "Content-Type": "applications/json",
@@ -45,7 +45,7 @@ describe("POST /api/v1/sessions", () => {
   });
 
   test("With correct `email` but incorrect `password`", async () => {
-    const newUser = await fetch("http://localhost:3000/api/users", {
+    await fetch("http://localhost:3000/api/users", {
       method: "POST",
       headers: {
         "Content-Type": "applications/json",
@@ -81,7 +81,7 @@ describe("POST /api/v1/sessions", () => {
   });
 
   test("With incorrect `email` and incorrect `password`", async () => {
-    const newUser = await fetch("http://localhost:3000/api/users", {
+    await fetch("http://localhost:3000/api/users", {
       method: "POST",
       headers: {
         "Content-Type": "applications/json",

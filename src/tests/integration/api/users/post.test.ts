@@ -35,11 +35,11 @@ describe("POST /api/users", () => {
 
     const correctPassword = await password.compare(
       "senha",
-      responseBody.password
+      responseBody.password,
     );
     const incorrectPassword = await password.compare(
       "senha-incorreta",
-      responseBody.password
+      responseBody.password,
     );
 
     expect(correctPassword).toBe(true);
