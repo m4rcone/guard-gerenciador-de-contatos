@@ -32,6 +32,35 @@ export const SigninFormSchema = z.object({
     .trim(),
 });
 
+export const AddContactFormSchema = z.object({
+  name: z.string().min(1, { message: "Por favor, insira o nome." }).trim(),
+  phone: z
+    .string()
+    .max(20, { message: "Máximo 20 caracteres." })
+    .trim()
+    .optional(),
+  email: z
+    .email({ message: "Por favor, insira um e-mail válido." })
+    .trim()
+    .or(z.literal(""))
+    .optional(),
+});
+
+export const EditContactFormSchema = z.object({
+  id: z.uuid(),
+  name: z.string().min(1, { message: "Por favor, insira o nome." }).trim(),
+  phone: z
+    .string()
+    .max(20, { message: "Máximo 20 caracteres." })
+    .trim()
+    .optional(),
+  email: z
+    .email({ message: "Por favor, insira um e-mail válido." })
+    .trim()
+    .or(z.literal(""))
+    .optional(),
+});
+
 export type FormState =
   | {
       errors?: {
@@ -39,6 +68,7 @@ export type FormState =
         email?: string[];
         password?: string[];
         repeat?: string[];
+        phone?: string[];
       };
       message?: string;
       success?: boolean;

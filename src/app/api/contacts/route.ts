@@ -6,14 +6,15 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   try {
     const sessionToken = request.cookies.get("session_id")?.value;
-    const contactInputValues = await request.json();
 
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const renewedSessionObject = await session.renew(sessionObject.id);
 
+    const contactInputValues = await request.json();
+
     const newContact = await contact.create({
       ...contactInputValues,
-      userId: sessionObject.user_id,
+      user_id: sessionObject.user_id,
     });
 
     const response = NextResponse.json(newContact, { status: 201 });

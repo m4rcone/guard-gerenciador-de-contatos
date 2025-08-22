@@ -1,11 +1,13 @@
 import database from "infra/database";
+import { NotFoundError } from "infra/errors";
 import { randomUUID } from "node:crypto";
 
 type ContactInputValues = {
-  name: string;
+  id?: string;
+  name?: string;
   phone?: string;
   email?: string;
-  userId: string;
+  user_id?: string;
 };
 
 async function create(contactInputValues: ContactInputValues) {
@@ -28,7 +30,7 @@ async function create(contactInputValues: ContactInputValues) {
         contactInputValues.name,
         contactInputValues.phone,
         contactInputValues.email,
-        contactInputValues.userId,
+        contactInputValues.user_id,
       ],
     });
 
@@ -36,8 +38,122 @@ async function create(contactInputValues: ContactInputValues) {
   }
 }
 
+async function update(
+  contactId: string,
+  contactInputValues: ContactInputValues,
+) {
+  const currentContact = await findOneById(contactId);
+
+  const contactWithNewValues = { ...currentContact, ...contactInputValues };
+
+  const updatedContact = await runUpdateQuery(contactWithNewValues);
+
+  return updatedContact;
+
+  async function runUpdateQuery(contactWithNewValues: ContactInputValues) {
+    const result = await database.query({
+      text: `
+        UPDATE
+          contacts
+        SET
+          name = $1,
+          phone = $2,
+          email = $3,
+          updated_at = timezone('UTC', now()),
+          user_id = $4
+        WHERE
+          id = $5
+        RETURNING
+          *
+      `,
+      values: [
+        contactWithNewValues.name,
+        contactWithNewValues.phone,
+        contactWithNewValues.email,
+        contactWithNewValues.user_id,
+        contactWithNewValues.id,
+      ],
+    });
+
+    return result.rows[0];
+  }
+}
+
+async function remove(contactId: string) {
+  await findOneById(contactId);
+  await runDeleteQuery(contactId);
+
+  async function runDeleteQuery(contactId: string) {
+    await database.query({
+      text: `
+        DELETE FROM
+          contacts
+        WHERE
+          id = $1
+      `,
+      values: [contactId],
+    });
+  }
+}
+
+async function findOneById(contactId: string) {
+  const contactFound = await runSelectQuery(contactId);
+
+  return contactFound;
+
+  async function runSelectQuery(contactId: string) {
+    const result = await database.query({
+      text: `
+        SELECT
+          *
+        FROM
+          contacts
+        WHERE
+          id = $1
+      `,
+      values: [contactId],
+    });
+
+    if (result.rowCount === 0) {
+      throw new NotFoundError({
+        message: "O id informado não foi encontrado no sistema.",
+        action: "Verifique o id informado e tente novamente.",
+      });
+    }
+
+    return result.rows[0];
+  }
+}
+
+async function findManyByUserId(userId: string) {
+  const contactsFound = await runSelectQuery(userId);
+
+  return contactsFound;
+
+  async function runSelectQuery(userId: string) {
+    const result = await database.query({
+      text: `
+        SELECT
+          *
+        FROM
+          contacts
+        WHERE
+          user_id = $1
+        ORDER BY
+          name
+      `,
+      values: [userId],
+    });
+
+    return result.rows;
+  }
+}
+
 const contact = {
   create,
+  update,
+  remove,
+  findManyByUserId,
 };
 
 export default contact;

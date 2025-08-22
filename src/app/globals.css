@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@tailwind utilities;
+
 @theme {
   --color-background-primary: #111111;
   --color-background-secondary: #1b1b1b;
@@ -14,4 +16,15 @@
   --color-accent-brand: #c4f120;
   --color-accent-brand-hover: #a8d30d;
   --color-accent-red: #e61e32;
+}
+
+@layer utilities {
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
 }
