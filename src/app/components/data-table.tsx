@@ -1,9 +1,9 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Button from "./ui/button";
-import { CircleUser, Lock } from "lucide-react";
+import { BrushCleaning, CircleUser, Lock } from "lucide-react";
 import EditContactDialog from "./edit-contact-dialog";
 import DeleteContactDialog from "./delete-contact-dialog";
 import clsx from "clsx";
@@ -20,24 +20,39 @@ export default function DataTable({ contacts }: { contacts: Contact[] }) {
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>(contacts);
 
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
   const params = new URLSearchParams(searchParams);
   const search = params.get("search");
 
   useEffect(() => {
     if (!search) {
-      setFilteredContacts(contacts);
+      setFilteredContacts(
+        contacts.sort((a, b) => a.name.localeCompare(b.name, "pt-BR")),
+      );
     } else {
       setFilteredContacts(
         contacts.filter((contact) =>
-          contact.name?.toLowerCase().includes(search?.toLowerCase()),
+          contact.name?.toLowerCase().startsWith(search?.toLowerCase()),
         ),
       );
     }
   }, [search, contacts]);
 
+  const handleClearSearch = () => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete("search");
+    router.replace(`${pathname}?${newParams.toString()}`);
+  };
+
   return (
     <div className="flex flex-1 flex-col gap-7 lg:pr-[54px]">
-      <div className="border-content-primary/50 border-b-[1px] pb-5">
+      <div className="border-content-primary/50 flex items-center gap-4 border-b-[1px] pb-5">
+        <BrushCleaning
+          className="text-content-primary cursor-pointer"
+          onClick={handleClearSearch}
+        />
         <p className="text-content-primary text-sm font-bold">
           {search ? search[0].toLocaleUpperCase() : "..."}
         </p>
@@ -93,6 +108,13 @@ export default function DataTable({ contacts }: { contacts: Contact[] }) {
                 </td>
               </tr>
             ))}
+          {filteredContacts.length === 0 && (
+            <tr>
+              <td className="py-3" colSpan={4}>
+                Nenhum contato encontrado.
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

@@ -2,7 +2,7 @@
 
 import { Dialog } from "radix-ui";
 import Button from "./ui/button";
-import { Trash2, X } from "lucide-react";
+import { LoaderPinwheel, Trash2, X } from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { deleteContact } from "app/actions/delete-contact";
@@ -44,13 +44,10 @@ export default function DeleteContactDialog({ contact }) {
               </Dialog.Close>
             </Dialog.Title>
             <Dialog.Description asChild>
-              <div className="text-content-primary flex max-w-[320px] items-center justify-center p-3">
-                <p>
-                  Você deseja deletar o contato{" "}
-                  <span className="text-accent-brand font-semibold">
-                    {contact.name}
-                  </span>
-                  ?
+              <div className="text-content-primary flex w-[320px] flex-col p-3">
+                <p className="truncate">Você deseja deletar o contato?</p>
+                <p className="text-accent-brand truncate font-semibold">
+                  {contact.name}
                 </p>
               </div>
             </Dialog.Description>
@@ -67,7 +64,11 @@ export default function DeleteContactDialog({ contact }) {
                   size="md"
                   disabled={pending}
                 >
-                  Deletar
+                  {pending ? (
+                    <LoaderPinwheel className="animate-spin" />
+                  ) : (
+                    "Deletar"
+                  )}
                 </Button>
               </form>
             </div>

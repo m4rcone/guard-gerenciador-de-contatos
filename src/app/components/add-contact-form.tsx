@@ -7,11 +7,18 @@ import { useRouter } from "next/navigation";
 import { Dialog } from "radix-ui";
 import Button from "./ui/button";
 import Input from "./ui/input";
-import { CircleUser } from "lucide-react";
+import { CircleUser, LoaderPinwheel } from "lucide-react";
 
 export default function AddContactForm({ setOpen }) {
-  const [state, action, pending] = useActionState(addContact, undefined);
   const [tooltip, setTooltip] = useState(false);
+  const [formValues, setFormValues] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    avatar: undefined,
+  });
+
+  const [state, action, pending] = useActionState(addContact, undefined);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const router = useRouter();
@@ -20,8 +27,19 @@ export default function AddContactForm({ setOpen }) {
     if (state?.success) {
       setOpen(false);
       router.push("/");
+    } else {
+      setFormValues((prev) => ({ ...prev, avatar: undefined }));
     }
   }, [state, router, setOpen]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, files } = e.target;
+    if (name === "avatar" && files && files[0]) {
+      setFormValues((prev) => ({ ...prev, avatar: files[0].name }));
+    } else {
+      setFormValues((prev) => ({ ...prev, [name]: value }));
+    }
+  };
 
   const handleMouseEnter = () => {
     timeoutRef.current = setTimeout(() => {
@@ -50,13 +68,7 @@ export default function AddContactForm({ setOpen }) {
             id="avatar"
             name="avatar"
             className="hidden"
-            onChange={(e) => {
-              const file = e.target.files[0];
-              const fileName = document.getElementById("file-name");
-              if (file) {
-                fileName.textContent = file.name || "";
-              }
-            }}
+            onChange={handleChange}
           />
           <label
             htmlFor="avatar"
@@ -64,7 +76,12 @@ export default function AddContactForm({ setOpen }) {
           >
             + Adicionar foto
           </label>
-          <span id="file-name" className="text-xs text-gray-600"></span>
+          <p
+            id="file-name"
+            className="max-w-[290px] truncate text-xs text-gray-600"
+          >
+            {formValues.avatar}
+          </p>
         </div>
       </div>
 
@@ -75,7 +92,13 @@ export default function AddContactForm({ setOpen }) {
         >
           Nome
         </label>
-        <Input id="name" name="name" placeholder="Nome do contato" />
+        <Input
+          id="name"
+          name="name"
+          placeholder="Nome do contato"
+          value={formValues.name}
+          onChange={handleChange}
+        />
         {state?.errors?.name && (
           <div className="flex items-center gap-0.5">
             <Image src="icons/cancel.svg" alt="" width={16} height={16} />
@@ -90,7 +113,13 @@ export default function AddContactForm({ setOpen }) {
         >
           Telefone
         </label>
-        <Input id="phone" name="phone" placeholder="Número de telefone" />
+        <Input
+          id="phone"
+          name="phone"
+          placeholder="Número de telefone"
+          value={formValues.phone}
+          onChange={handleChange}
+        />
         {state?.errors?.phone && (
           <div className="flex items-center gap-0.5">
             <Image src="icons/cancel.svg" alt="" width={16} height={16} />
@@ -110,6 +139,8 @@ export default function AddContactForm({ setOpen }) {
           name="email"
           type="email"
           placeholder="E-mail do contato"
+          value={formValues.email}
+          onChange={handleChange}
         />
         {state?.errors?.email && (
           <div className="flex items-center gap-0.5">
@@ -153,7 +184,7 @@ export default function AddContactForm({ setOpen }) {
           size="md"
           disabled={pending}
         >
-          Salvar
+          {pending ? <LoaderPinwheel className="animate-spin" /> : "Salvar"}
         </Button>
       </div>
     </form>

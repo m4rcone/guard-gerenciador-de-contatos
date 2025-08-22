@@ -1,18 +1,35 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Dialog } from "radix-ui";
 import Button from "./ui/button";
 import Input from "./ui/input";
 import { editContact } from "app/actions/edit-contact";
-import { CircleUser } from "lucide-react";
+import { CircleUser, LoaderPinwheel } from "lucide-react";
 import { clsx } from "clsx";
 
 export default function EditContactForm({ setOpen, contact }) {
+  const [formValues, setFormValues] = useState({
+    name: contact.name,
+    phone: contact.phone,
+    email: contact.email,
+    avatar: undefined,
+  });
+
   const [state, action, pending] = useActionState(handleSubmit, undefined);
+
   const router = useRouter();
+
+  useEffect(() => {
+    if (state?.success) {
+      setOpen(false);
+      router.push("/");
+    } else {
+      setFormValues((prev) => ({ ...prev, avatar: undefined }));
+    }
+  }, [state, router, setOpen]);
 
   async function handleSubmit(state, formData: FormData) {
     formData.set("id", contact.id);
@@ -20,12 +37,14 @@ export default function EditContactForm({ setOpen, contact }) {
     return await editContact(state, formData);
   }
 
-  useEffect(() => {
-    if (state?.success) {
-      setOpen(false);
-      router.push("/");
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, files } = e.target;
+    if (name === "avatar" && files && files[0]) {
+      setFormValues((prev) => ({ ...prev, avatar: files[0].name }));
+    } else {
+      setFormValues((prev) => ({ ...prev, [name]: value }));
     }
-  }, [state, router, setOpen]);
+  };
 
   return (
     <form action={action} className="flex w-[290px] flex-col gap-4">
@@ -53,13 +72,7 @@ export default function EditContactForm({ setOpen, contact }) {
             id="avatar"
             name="avatar"
             className="hidden"
-            onChange={(e) => {
-              const file = e.target.files[0];
-              const fileName = document.getElementById("file-name");
-              if (file) {
-                fileName.textContent = file.name || "";
-              }
-            }}
+            onChange={handleChange}
           />
           <label
             htmlFor="avatar"
@@ -67,7 +80,12 @@ export default function EditContactForm({ setOpen, contact }) {
           >
             {!contact.avatar_url ? "+ Adicionar foto" : "Substituir"}
           </label>
-          <span id="file-name" className="text-xs text-gray-600"></span>
+          <p
+            id="file-name"
+            className="max-w-[290px] truncate text-xs text-gray-600"
+          >
+            {formValues.avatar}
+          </p>
         </div>
       </div>
 
@@ -82,7 +100,8 @@ export default function EditContactForm({ setOpen, contact }) {
           id="name"
           name="name"
           placeholder="Nome do contato"
-          defaultValue={contact.name}
+          value={formValues.name}
+          onChange={handleChange}
         />
         {state?.errors?.name && (
           <div className="flex items-center gap-0.5">
@@ -102,7 +121,8 @@ export default function EditContactForm({ setOpen, contact }) {
           id="phone"
           name="phone"
           placeholder="Número de telefone"
-          defaultValue={contact.phone}
+          value={formValues.phone}
+          onChange={handleChange}
         />
         {state?.errors?.phone && (
           <div className="flex items-center gap-0.5">
@@ -123,7 +143,8 @@ export default function EditContactForm({ setOpen, contact }) {
           name="email"
           type="email"
           placeholder="E-mail do contato"
-          defaultValue={contact.email}
+          value={formValues.email}
+          onChange={handleChange}
         />
         {state?.errors?.email && (
           <div className="flex items-center gap-0.5">
@@ -145,7 +166,7 @@ export default function EditContactForm({ setOpen, contact }) {
           </Button>
         </Dialog.Close>
         <Button type="submit" variant="primary" size="md" disabled={pending}>
-          Salvar
+          {pending ? <LoaderPinwheel className="animate-spin" /> : "Salvar"}
         </Button>
       </div>
     </form>

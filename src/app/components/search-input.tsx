@@ -21,9 +21,9 @@ export default function SearchInput() {
 
   return (
     <Input
-      id="query"
-      name="query"
-      type="query"
+      id="search"
+      name="search"
+      type="search"
       placeholder="Pesquisar"
       onChange={(e) => handleSearch(e.target.value)}
       defaultValue={searchParams.get("search")?.toString()}
