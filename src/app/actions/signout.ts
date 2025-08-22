@@ -1,5 +1,5 @@
 export async function signout() {
-  const response = await fetch("http://localhost:3000/api/sessions", {
+  const response = await fetch("/api/sessions", {
     method: "DELETE",
   });
 

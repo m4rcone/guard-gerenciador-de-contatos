@@ -12,7 +12,7 @@ export async function signin(_state: FormState, formData: FormData) {
     };
   }
 
-  const response = await fetch("http://localhost:3000/api/sessions", {
+  const response = await fetch("/api/sessions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
