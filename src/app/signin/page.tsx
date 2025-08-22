@@ -5,7 +5,7 @@ export default function SigninPage() {
   return (
     <div className="h-screen w-screen">
       <div className="flex">
-        <div className="bg-accent-brand/20 hidden flex-1 md:block">
+        <div className="hidden flex-1 bg-[url('/bg.png')] bg-cover bg-bottom md:block">
           <div className="px-[98px] py-[50px]">
             <Image src="/logo.svg" alt="" width={131} height={32} />
           </div>

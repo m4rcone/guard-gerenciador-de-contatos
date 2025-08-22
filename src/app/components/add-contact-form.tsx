@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Dialog } from "radix-ui";
 import Button from "./ui/button";
 import Input from "./ui/input";
+import { CircleUser } from "lucide-react";
 
 export default function AddContactForm({ setOpen }) {
   const [state, action, pending] = useActionState(addContact, undefined);
@@ -38,6 +39,35 @@ export default function AddContactForm({ setOpen }) {
 
   return (
     <form action={action} className="flex w-[290px] flex-col gap-4">
+      <div className="flex flex-col items-center justify-center gap-3 p-2">
+        <div className="bg-background-secondary rounded-xl p-3">
+          <CircleUser size={40} className="text-content-muted" />
+        </div>
+
+        <div className="flex flex-col items-center gap-1">
+          <input
+            type="file"
+            id="avatar"
+            name="avatar"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              const fileName = document.getElementById("file-name");
+              if (file) {
+                fileName.textContent = file.name || "";
+              }
+            }}
+          />
+          <label
+            htmlFor="avatar"
+            className="text-content-primary hover:bg-background-tertiary border-border-primary cursor-pointer rounded-lg border bg-transparent p-3 text-xs font-semibold"
+          >
+            + Adicionar foto
+          </label>
+          <span id="file-name" className="text-xs text-gray-600"></span>
+        </div>
+      </div>
+
       <div className="flex flex-col gap-1">
         <label
           htmlFor="name"
@@ -92,6 +122,13 @@ export default function AddContactForm({ setOpen }) {
         <div className="flex items-center gap-0.5">
           <Image src="icons/cancel.svg" alt="" width={16} height={16} />
           <p className="text-content-body text-sm">{state.message}</p>
+        </div>
+      )}
+
+      {state?.errors?.avatar && (
+        <div className="flex items-center gap-0.5">
+          <Image src="icons/cancel.svg" alt="" width={16} height={16} />
+          <p className="text-content-body text-sm">{state.errors.avatar}</p>
         </div>
       )}
 

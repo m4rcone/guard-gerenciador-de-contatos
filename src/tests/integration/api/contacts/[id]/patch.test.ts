@@ -72,6 +72,7 @@ describe("PATCH /api/contacts/:id", () => {
         email: "email-atualizado@email.com",
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
+        avatar_url: responseBody.avatar_url,
       });
 
       expect(responseBody.updated_at > responseBody.created_at).toBe(true);

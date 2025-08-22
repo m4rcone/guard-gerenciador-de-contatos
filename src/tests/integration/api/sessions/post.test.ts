@@ -160,6 +160,7 @@ describe("POST /api/sessions", () => {
 
     expect(expiredAt - createdAt).toBe(session.EXPIRATION_IN_MILLISECONDS);
 
+    // Set-Cookies
     const parsedSetCookie = setCookieParser(response, {
       map: true,
     });

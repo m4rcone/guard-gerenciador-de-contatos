@@ -50,6 +50,7 @@ describe("POST /api/contacts", () => {
       email: "contato@email.com",
       created_at: responseBody.created_at,
       updated_at: responseBody.updated_at,
+      avatar_url: responseBody.avatar_url,
     });
   });
 

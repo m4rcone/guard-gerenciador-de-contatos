@@ -23,6 +23,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "3.873.0",
+    "@aws-sdk/s3-request-presigner": "3.873.0",
     "@tailwindcss/postcss": "4.1.12",
     "bcryptjs": "3.0.2",
     "clsx": "2.1.1",

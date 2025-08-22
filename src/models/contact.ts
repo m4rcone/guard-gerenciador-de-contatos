@@ -8,6 +8,7 @@ type ContactInputValues = {
   phone?: string;
   email?: string;
   user_id?: string;
+  avatar_url?: string;
 };
 
 async function create(contactInputValues: ContactInputValues) {
@@ -19,9 +20,9 @@ async function create(contactInputValues: ContactInputValues) {
     const result = await database.query({
       text: `
         INSERT INTO
-          contacts(id, name, phone, email, user_id)
+          contacts(id, name, phone, email, user_id, avatar_url)
         VALUES
-          ($1, $2, $3, $4, $5)
+          ($1, $2, $3, $4, $5, $6)
         RETURNING
           *
       `,
@@ -31,6 +32,7 @@ async function create(contactInputValues: ContactInputValues) {
         contactInputValues.phone,
         contactInputValues.email,
         contactInputValues.user_id,
+        contactInputValues.avatar_url,
       ],
     });
 
@@ -60,9 +62,10 @@ async function update(
           phone = $2,
           email = $3,
           updated_at = timezone('UTC', now()),
-          user_id = $4
+          user_id = $4,
+          avatar_url = $5
         WHERE
-          id = $5
+          id = $6
         RETURNING
           *
       `,
@@ -71,6 +74,7 @@ async function update(
         contactWithNewValues.phone,
         contactWithNewValues.email,
         contactWithNewValues.user_id,
+        contactWithNewValues.avatar_url,
         contactWithNewValues.id,
       ],
     });

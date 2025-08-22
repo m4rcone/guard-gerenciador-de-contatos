@@ -21,3 +21,21 @@ export async function POST(request: NextRequest) {
     return controller.errorHandlerResponse(error);
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const sessionToken = request.cookies.get("session_id")?.value;
+
+    const sessionObject = await session.findOneValidByToken(sessionToken);
+
+    const expiredSession = await session.expire(sessionObject.id);
+
+    const response = NextResponse.json(expiredSession, { status: 200 });
+
+    controller.clearSessionCookie(response);
+
+    return response;
+  } catch (error) {
+    return controller.errorHandlerResponse(error);
+  }
+}

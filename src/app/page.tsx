@@ -4,9 +4,10 @@ import Button from "./components/ui/button";
 import AlphabetFilter from "./components/alphabet-filter";
 import SearchInput from "./components/search-input";
 import DataTable from "./components/data-table";
-import { CircleUserRound, Lock, LogOut, Settings } from "lucide-react";
+import { CircleUserRound, Lock, Settings } from "lucide-react";
 import AddContactDialog from "./components/add-contact-dialog";
 import Link from "next/link";
+import SignoutButton from "./components/signout-button";
 
 export default async function Page() {
   const user = await getUser();
@@ -29,9 +30,7 @@ export default async function Page() {
               <Settings className="text-content-muted" />
             </Button>
           </div>
-          <Button type="button" variant="icon">
-            <LogOut className="text-content-muted" />
-          </Button>
+          <SignoutButton />
         </div>
         <div>
           <p className="text-content-muted text-xs font-bold">Logado como:</p>

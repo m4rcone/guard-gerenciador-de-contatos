@@ -1,4 +1,4 @@
-import { pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const contacts = pgTable("contacts", {
   id: uuid().primaryKey(),
@@ -12,4 +12,5 @@ export const contacts = pgTable("contacts", {
     .notNull()
     .defaultNow(),
   userId: uuid("user_id").notNull(),
+  avatarUrl: text("avatar_url"),
 });

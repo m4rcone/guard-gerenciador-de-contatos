@@ -69,6 +69,7 @@ export type FormState =
         password?: string[];
         repeat?: string[];
         phone?: string[];
+        avatar?: string[];
       };
       message?: string;
       success?: boolean;
