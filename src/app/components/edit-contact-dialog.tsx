@@ -2,7 +2,7 @@
 
 import { Dialog } from "radix-ui";
 import Button from "./ui/button";
-import { X } from "lucide-react";
+import { Pencil, X } from "lucide-react";
 import { useState } from "react";
 import EditContactForm from "./edit-contact-form";
 
@@ -12,7 +12,10 @@ export default function EditContactDialog({ contact }) {
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <Button variant="tertiary">Editar</Button>
+        <Button variant="tertiary">
+          <Pencil width={12} />
+          Editar
+        </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 backdrop-blur-sm" />

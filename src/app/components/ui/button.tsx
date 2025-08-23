@@ -17,7 +17,7 @@ export default function Button({
   return (
     <button
       className={clsx(
-        "cursor-pointer rounded-xl p-3 text-sm",
+        "flex cursor-pointer items-center gap-1 rounded-xl p-3 text-sm",
         variant === "primary" &&
           "text-content-inverse bg-accent-brand hover:bg-accent-brand-hover font-semibold",
         variant === "secondary" &&

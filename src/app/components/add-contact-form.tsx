@@ -2,12 +2,11 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { addContact } from "app/actions/add-contact";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Dialog } from "radix-ui";
 import Button from "./ui/button";
 import Input from "./ui/input";
-import { CircleUser, LoaderPinwheel } from "lucide-react";
+import { CircleUser, CircleX, LoaderPinwheel } from "lucide-react";
 
 export default function AddContactForm({ setOpen }) {
   const [tooltip, setTooltip] = useState(false);
@@ -100,8 +99,8 @@ export default function AddContactForm({ setOpen }) {
           onChange={handleChange}
         />
         {state?.errors?.name && (
-          <div className="flex items-center gap-0.5">
-            <Image src="icons/cancel.svg" alt="" width={16} height={16} />
+          <div className="flex items-center gap-1">
+            <CircleX width={16} className="text-accent-red" />
             <p className="text-content-body text-sm">{state.errors.name}</p>
           </div>
         )}
@@ -121,8 +120,8 @@ export default function AddContactForm({ setOpen }) {
           onChange={handleChange}
         />
         {state?.errors?.phone && (
-          <div className="flex items-center gap-0.5">
-            <Image src="icons/cancel.svg" alt="" width={16} height={16} />
+          <div className="flex items-center gap-1">
+            <CircleX width={16} className="text-accent-red" />
             <p className="text-content-body text-sm">{state.errors.phone}</p>
           </div>
         )}
@@ -143,26 +142,24 @@ export default function AddContactForm({ setOpen }) {
           onChange={handleChange}
         />
         {state?.errors?.email && (
-          <div className="flex items-center gap-0.5">
-            <Image src="icons/cancel.svg" alt="" width={16} height={16} />
+          <div className="flex items-center gap-1">
+            <CircleX width={16} className="text-accent-red" />
             <p className="text-content-body text-sm">{state.errors.email}</p>
           </div>
         )}
       </div>
       {state?.message && (
-        <div className="flex items-center gap-0.5">
-          <Image src="icons/cancel.svg" alt="" width={16} height={16} />
+        <div className="flex items-center gap-1">
+          <CircleX width={16} className="text-accent-red" />
           <p className="text-content-body text-sm">{state.message}</p>
         </div>
       )}
-
       {state?.errors?.avatar && (
-        <div className="flex items-center gap-0.5">
-          <Image src="icons/cancel.svg" alt="" width={16} height={16} />
+        <div className="flex items-center gap-1">
+          <CircleX width={16} className="text-accent-red" />
           <p className="text-content-body text-sm">{state.errors.avatar}</p>
         </div>
       )}
-
       {tooltip && (
         <div className="flex justify-center">
           <p className="text-accent-brand text-xs">

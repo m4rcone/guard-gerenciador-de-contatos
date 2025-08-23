@@ -1,7 +1,10 @@
 import { FormState, EditContactFormSchema } from "app/lib/definitions";
 import { uploadToStorage } from "./upload-to-storage";
 
-export async function editContact(_state: FormState, formData: FormData) {
+export async function editContact(
+  _state: FormState,
+  formData: FormData,
+): Promise<FormState> {
   const validatedFields = EditContactFormSchema.safeParse({
     id: formData.get("id"),
     name: formData.get("name"),

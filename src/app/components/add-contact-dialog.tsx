@@ -3,7 +3,7 @@
 import { Dialog } from "radix-ui";
 import Button from "./ui/button";
 import AddContactForm from "./add-contact-form";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useState } from "react";
 
 export default function AddContactDialog() {
@@ -13,7 +13,8 @@ export default function AddContactDialog() {
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
         <Button variant="secondary" size="md">
-          + Adicionar contato
+          <Plus width={16} />
+          Adicionar contato
         </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
