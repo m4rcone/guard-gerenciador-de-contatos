@@ -17,7 +17,7 @@ export default async function Page() {
 
   return (
     <div className="bg-background-primary flex min-h-screen w-screen flex-col items-center gap-6 px-4 py-4 lg:h-screen lg:flex-row lg:px-9 lg:py-12">
-      <div className="flex h-full w-full flex-row items-center justify-between px-[30px] lg:w-[111px] lg:flex-col">
+      <div className="flex h-full w-full flex-row items-center justify-between gap-4 px-[30px] lg:w-[111px] lg:flex-col">
         <Link href="/">
           <Image src="/logo-sm.png" alt="Logo Guard" width={29} height={32} />
         </Link>
@@ -34,9 +34,9 @@ export default async function Page() {
           </div>
           <SignoutButton />
         </div>
-        <div>
+        <div className="truncate lg:w-[111px]">
           <p className="text-content-muted text-xs font-bold">Logado como:</p>
-          <p className="text-content-body text-xs">{user.email}</p>
+          <p className="text-content-body truncate text-xs">{user.email}</p>
         </div>
       </div>
       <div className="bg-background-secondary h-full w-full rounded-[40px] p-[40px] lg:mr-12">
