@@ -3,10 +3,11 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Button from "./ui/button";
-import { BrushCleaning, CircleUser, Lock } from "lucide-react";
+import { BrushCleaning, CircleUser, Lock, Unlock } from "lucide-react";
 import EditContactDialog from "./edit-contact-dialog";
 import DeleteContactDialog from "./delete-contact-dialog";
 import clsx from "clsx";
+import PasswordDialog from "./password-dialog";
 
 type Contact = {
   id: string;
@@ -18,6 +19,9 @@ type Contact = {
 
 export default function DataTable({ contacts }: { contacts: Contact[] }) {
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>(contacts);
+  const [visibleContactIds, setVisibleContactIds] = useState<Set<string>>(
+    new Set(),
+  );
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -44,6 +48,36 @@ export default function DataTable({ contacts }: { contacts: Contact[] }) {
     const newParams = new URLSearchParams(searchParams);
     newParams.delete("search");
     router.replace(`${pathname}?${newParams.toString()}`);
+  };
+
+  const toggleContactVisibility = (contactId: string) => {
+    setVisibleContactIds((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(contactId)) {
+        newSet.delete(contactId); // Se já está visível, ocultar
+      } else {
+        newSet.add(contactId); // Se está oculto, tornar visível
+      }
+      return newSet;
+    });
+  };
+
+  const isContactVisible = (contactId: string) => {
+    return visibleContactIds.has(contactId);
+  };
+
+  const maskData = (data: string, type: string, contactId: string) => {
+    if (!isContactVisible(contactId)) {
+      if (type === "phone") {
+        return "*".repeat(15);
+      }
+
+      if (type === "email") {
+        return "*".repeat(20);
+      }
+    }
+
+    return data;
   };
 
   return (
@@ -92,17 +126,33 @@ export default function DataTable({ contacts }: { contacts: Contact[] }) {
                   </div>
                 </td>
                 <td className="border-content-primary/20 border-b py-3">
-                  {contact.phone ? contact.phone : "-"}
+                  {contact.phone
+                    ? maskData(contact.phone, "phone", contact.id)
+                    : "-"}
                 </td>
                 <td className="border-content-primary/20 border-b py-3">
-                  {contact.email ? contact.email : "-"}
+                  {contact.email
+                    ? maskData(contact.email, "email", contact.id)
+                    : "-"}
                 </td>
                 <td className="border-content-primary/20 border-b py-3">
                   <div className="flex items-center justify-end gap-2">
                     <EditContactDialog contact={contact} />
-                    <Button variant="tertiary" size="sm">
-                      <Lock size={12} />
-                    </Button>
+                    {isContactVisible(contact.id) ? (
+                      <Button
+                        variant="tertiary"
+                        size="sm"
+                        onClick={() => toggleContactVisibility(contact.id)}
+                      >
+                        <Lock size={12} />
+                      </Button>
+                    ) : (
+                      <PasswordDialog
+                        onToggleVisibility={() =>
+                          toggleContactVisibility(contact.id)
+                        }
+                      />
+                    )}
                     <DeleteContactDialog contact={contact} />
                   </div>
                 </td>

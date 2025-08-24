@@ -47,6 +47,7 @@ export default async function Page() {
               <div className="flex flex-wrap items-center gap-2.5 lg:flex-1 lg:flex-nowrap">
                 <SearchInput />
                 <AddContactDialog />
+                {/* No lugar do Button vai ter outro componente */}
                 <Button variant="tertiary" size="md">
                   <Lock size={16} />
                 </Button>
