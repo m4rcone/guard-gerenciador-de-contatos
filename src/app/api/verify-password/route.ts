@@ -1,5 +1,4 @@
 import controller from "infra/controller";
-import { UnauthorizedError } from "infra/errors";
 import password from "models/password";
 import session from "models/session";
 import user from "models/user";

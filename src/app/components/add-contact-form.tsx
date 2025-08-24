@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { addContact } from "app/actions/add-contact";
 import { useRouter } from "next/navigation";
 import { Dialog } from "radix-ui";

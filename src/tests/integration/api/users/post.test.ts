@@ -1,4 +1,3 @@
-import password from "models/password";
 import orchestrator from "tests/orchestrator";
 
 beforeAll(async () => {

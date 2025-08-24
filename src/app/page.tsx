@@ -4,12 +4,11 @@ import Button from "./components/ui/button";
 import AlphabetFilter from "./components/alphabet-filter";
 import SearchInput from "./components/search-input";
 import DataTable from "./components/data-table";
-import { CircleUserRound, Lock, Settings } from "lucide-react";
+import { CircleUserRound, Settings } from "lucide-react";
 import AddContactDialog from "./components/add-contact-dialog";
 import Link from "next/link";
 import SignoutButton from "./components/signout-button";
 import { VisibilityProvider } from "./context/visibility-context";
-import PasswordDialog from "./components/password-dialog";
 import PasswordDialogWrapper from "./components/password-dialog-wrapper";
 
 export default async function Page() {
