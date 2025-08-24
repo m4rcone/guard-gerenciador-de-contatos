@@ -14,6 +14,7 @@ O sistema simula o painel de controle de um vendedor, onde é possível cadastra
 - Listagem de contatos
 - Filtro de contatos por letra inicial do nome
 - Pesquisa de contatos por nome
+- Controle de visibilidade dos dados
 - Easter Egg ao manter o mouse sobre o botão "Adicionar contato" por 7 segundos
 
 ## 🖥️ Como executar local
@@ -64,9 +65,11 @@ export default function SearchInput() {
 }
 ```
 
-Foram criados `2` componentes de UI (`Button` e `Input`) + `11` componentes, e `3` páginas `signin`, `signup` e `/`.
+Foram criados `dois` componentes de UI (`Button` e `Input`) + `treze` componentes, e `três` páginas `signin`, `signup` e `/`.
 
 Organizei as requisições na API (escrita) na pasta `actions` e as requisições de busca de dados, coloquei no arquivo `lib/dal.ts` `data access layer`, onde as requisições não partem pelo navegador, sendo diretas do servidor `Node.js`, pois são feitas através de componentes renderizados no servidor `server components`.
+
+Criei também um contexto `context/visibility-context.tsx` para armazenar a lógica do controle de visibilidade dos dados. Acredito que foi meu maior desafio no front-end pois existe dois controle de visibilidade (individual por contato, e todos contatos). Para definir a lógica do controle de todos os contatos, precisei criar o componente `password-dialog-wrapper` onde ele faz o tunelamento do componente `password-dialog` recebendo a lista de contatos e aplicando a lógica, diferente do que acontece no controle individual, onde recebe apenas o id do contato.
 
 ## ⚙️ Back-end
 
@@ -79,14 +82,15 @@ Utilzei o `API Routes` do `Next.js` para criar o back-end da aplicação, dispon
 - PATCH `/api/contacts/:id` -> Edita um contato
 - DELETE `/api/contacs/:id` -> Exclui um contato
 - GET `/api/generate-upload-url?file&type` -> Gera uma url assinada para o upload
+- POST `/api/verify-password` -> Verifica se a senha está correta/incorreta
 
 Para lidar com as entidades do sistema, criei os seguintes models: `user`, `password`, `session`, `authentication` e `contact`.
 
 ## 🧪 Testes Automatizados
 
-Utilizei `Jest` para os testes. Criei 7 suites de testes de `integração`, um pra cada endpoint, totalizando `19` testes no back-end. Criei também um `orchestrator` para os testes, que possui as funções `clearDatabase` e `runMigrations`, utilizadas antes de cada suíte de testes, e as funções `createSession` e `createUser` para retornar uma função válida e um usuário, respectivamente, o que agiliza nos testes. Assim, cada suíte de testes é feita com o banco de dados limpo.
+Utilizei `Jest` para os testes. Criei `oito` suites de testes de `integração`, um pra cada endpoint, totalizando `vinte` testes no back-end. Criei também um `orchestrator` para os testes, que possui as funções `clearDatabase` e `runMigrations`, utilizadas antes de cada suíte de testes, e as funções `createSession` e `createUser` para retornar uma função válida e um usuário, respectivamente, o que agiliza nos testes. Assim, cada suíte de testes é feita com o banco de dados limpo.
 
-<img width="477" height="892" alt="image" src="https://github.com/user-attachments/assets/d194a2d6-0626-4f14-9eb5-39232ac9ee81" />
+<img width="468" height="912" alt="image" src="https://github.com/user-attachments/assets/04acedb7-984b-4ac5-babe-a6d53918c0cc" />
 
 ## 💾 Banco de dados e Storage
 
@@ -140,9 +144,39 @@ Criei `5` erros customizados para lidar com as exceções e retornos nas requisi
 
 ## 📁 Estrutura do projeto
 
-No `back-end`, as entidades são representadas pelos arquivos dentro da pasta `models`. As próprias rotas são os `controllers` e o arquivo `controller.ts` funciona como uma espécie de `helper` das rotas, auxiliando nas respostas de erros e cabeçalhos. Os testes foram organizados dentro de uma pasta especifica, seguindo a estrutura das rotas da API, por exemplo: `/tests/integration/users/post.test.ts`.
-
-No `front-end`, como utilizei o `App Router` do `Next.js`, as páginas estão organizadas por pasta, ex.: `/signin/page.tsx` e `/signup/page.tsx`. Na pasta `actions` coloquei as ações de requisição à API oriundas do client (navegador). Já no arquivo `/lib/dal.ts` coloquei as requisições diretas do servidor Node.js. Os componentes eu coloquei na pasta `/components` e `/components/ui`.
+```text
+📦src
+ ┣ 📂app
+ ┃ ┣ 📂actions
+ ┃ ┣ 📂api
+ ┃ ┃ ┣ 📂contacts
+ ┃ ┃ ┃ ┣ 📂[id]
+ ┃ ┃ ┣ 📂generate-upload-url
+ ┃ ┃ ┣ 📂sessions
+ ┃ ┃ ┣ 📂users
+ ┃ ┃ ┗ 📂verify-password
+ ┃ ┣ 📂components
+ ┃ ┃ ┣ 📂ui
+ ┃ ┣ 📂context
+ ┃ ┣ 📂lib
+ ┃ ┣ 📂signin
+ ┃ ┣ 📂signup
+ ┃ ┣ 📂utils
+ ┣ 📂infra
+ ┃ ┣ 📂database
+ ┃ ┃ ┣ 📂migrations
+ ┃ ┃ ┗ 📂schemas
+ ┣ 📂models
+ ┗ 📂tests
+ ┃ ┣ 📂integration
+ ┃ ┃ ┗ 📂api
+ ┃ ┃ ┃ ┣ 📂contacts
+ ┃ ┃ ┃ ┃ ┣ 📂[id]
+ ┃ ┃ ┃ ┣ 📂generate-upload-url
+ ┃ ┃ ┃ ┣ 📂sessions
+ ┃ ┃ ┃ ┣ 📂users
+ ┃ ┃ ┃ ┗ 📂verify-password
+```
 
 ---
 
