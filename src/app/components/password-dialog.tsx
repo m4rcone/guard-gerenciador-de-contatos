@@ -2,8 +2,8 @@
 
 import { Dialog } from "radix-ui";
 import Button from "./ui/button";
-import { CircleX, LoaderPinwheel, Lock, Unlock, X } from "lucide-react";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { CircleX, LoaderPinwheel, Lock, X } from "lucide-react";
+import { useActionState, useEffect, useState } from "react";
 import Input from "./ui/input";
 import { verifyPassword } from "app/actions/verify-password";
 
@@ -36,7 +36,7 @@ export default function PasswordDialog({
     <Dialog.Root open={open} onOpenChange={handleOpenChange}>
       <Dialog.Trigger asChild>
         <Button variant="tertiary" size="sm">
-          <Unlock size={12} />
+          <Lock size={12} />
         </Button>
       </Dialog.Trigger>
       <Dialog.Portal>

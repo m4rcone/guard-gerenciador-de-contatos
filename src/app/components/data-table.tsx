@@ -1,15 +1,16 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Button from "./ui/button";
-import { BrushCleaning, CircleUser, Lock, Unlock } from "lucide-react";
+import { BrushCleaning, CircleUser, Unlock } from "lucide-react";
 import EditContactDialog from "./edit-contact-dialog";
 import DeleteContactDialog from "./delete-contact-dialog";
 import clsx from "clsx";
 import PasswordDialog from "./password-dialog";
+import { VisibilityContext } from "app/context/visibility-context";
 
-type Contact = {
+export type Contact = {
   id: string;
   name: string;
   phone: string;
@@ -19,9 +20,9 @@ type Contact = {
 
 export default function DataTable({ contacts }: { contacts: Contact[] }) {
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>(contacts);
-  const [visibleContactIds, setVisibleContactIds] = useState<Set<string>>(
-    new Set(),
-  );
+
+  const { isContactVisible, toggleContactVisibility } =
+    useContext(VisibilityContext);
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -48,22 +49,6 @@ export default function DataTable({ contacts }: { contacts: Contact[] }) {
     const newParams = new URLSearchParams(searchParams);
     newParams.delete("search");
     router.replace(`${pathname}?${newParams.toString()}`);
-  };
-
-  const toggleContactVisibility = (contactId: string) => {
-    setVisibleContactIds((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(contactId)) {
-        newSet.delete(contactId); // Se já está visível, ocultar
-      } else {
-        newSet.add(contactId); // Se está oculto, tornar visível
-      }
-      return newSet;
-    });
-  };
-
-  const isContactVisible = (contactId: string) => {
-    return visibleContactIds.has(contactId);
   };
 
   const maskData = (data: string, type: string, contactId: string) => {
@@ -142,14 +127,16 @@ export default function DataTable({ contacts }: { contacts: Contact[] }) {
                       <Button
                         variant="tertiary"
                         size="sm"
-                        onClick={() => toggleContactVisibility(contact.id)}
+                        onClick={() =>
+                          toggleContactVisibility(contact.id, undefined)
+                        }
                       >
-                        <Lock size={12} />
+                        <Unlock size={12} />
                       </Button>
                     ) : (
                       <PasswordDialog
                         onToggleVisibility={() =>
-                          toggleContactVisibility(contact.id)
+                          toggleContactVisibility(contact.id, undefined)
                         }
                       />
                     )}
