@@ -122,7 +122,7 @@ Centralizei a validação das credenciais no model `authentication`, permitindo 
 ### Set-Cookie
 
 As instruções do cabeçalho `cookie` são retornadas nas respostas sempre que a sessão é criada, atualizada ou expirada. As instruções utilizadas no `cookie` foram:
-```
+```ts
 {
   path: "/", // Utilizada para todas rotas da aplicação
   maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000, // Adiciona o tempo de expiração em segundos
