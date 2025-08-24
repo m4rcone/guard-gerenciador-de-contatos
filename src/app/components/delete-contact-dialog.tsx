@@ -22,7 +22,7 @@ export default function DeleteContactDialog({ contact }) {
   useEffect(() => {
     if (state?.success) {
       setOpen(false);
-      router.push("/");
+      router.refresh();
     }
   }, [state, router]);
 

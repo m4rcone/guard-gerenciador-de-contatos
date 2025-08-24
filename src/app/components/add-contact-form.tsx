@@ -24,7 +24,7 @@ export default function AddContactForm({ setOpen }) {
   useEffect(() => {
     if (state?.success) {
       setOpen(false);
-      router.push("/");
+      router.refresh();
     } else {
       setFormValues((prev) => ({ ...prev, avatar: undefined }));
     }
