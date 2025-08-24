@@ -8,6 +8,7 @@ import Input from "./ui/input";
 import { editContact } from "app/actions/edit-contact";
 import { CircleUser, CircleX, LoaderPinwheel } from "lucide-react";
 import { clsx } from "clsx";
+import { maskPhone } from "app/utils/mask-phone";
 
 export default function EditContactForm({ setOpen, contact }) {
   const [formValues, setFormValues] = useState({
@@ -40,9 +41,15 @@ export default function EditContactForm({ setOpen, contact }) {
     const { name, value, files } = e.target;
     if (name === "avatar" && files && files[0]) {
       setFormValues((prev) => ({ ...prev, avatar: files[0].name }));
-    } else {
-      setFormValues((prev) => ({ ...prev, [name]: value }));
+      return;
     }
+
+    if (name === "phone") {
+      setFormValues((prev) => ({ ...prev, [name]: maskPhone(value) }));
+      return;
+    }
+
+    setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -119,7 +126,8 @@ export default function EditContactForm({ setOpen, contact }) {
         <Input
           id="phone"
           name="phone"
-          placeholder="Número de telefone"
+          placeholder="(11) 98765-4321"
+          maxLength={15}
           value={formValues.phone}
           onChange={handleChange}
         />

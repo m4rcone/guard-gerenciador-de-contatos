@@ -9,37 +9,28 @@ beforeAll(async () => {
 describe("DELETE /api/contacts/:id", () => {
   describe("Authenticated user", () => {
     test("With existent 'id'", async () => {
-      const newUser = await fetch("http://localhost:3000/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const newUser = await orchestrator.createUser();
+
+      const sessionObject = await orchestrator.createSession(newUser.id);
+
+      const newContactResponse = await fetch(
+        "http://localhost:3000/api/contacts",
+        {
+          method: "POST",
+          headers: {
+            Cookie: `session_id=${sessionObject.token}`,
+          },
+          body: JSON.stringify({
+            name: "contato",
+            phone: "+5551999999999",
+            email: "contato@email.com",
+          }),
         },
-        body: JSON.stringify({
-          name: "nome",
-          email: "delete@email.com",
-          password: "senha",
-        }),
-      });
-
-      const newUserResponseBody = await newUser.json();
-
-      const sessionObject = await orchestrator.createSession(
-        newUserResponseBody.id,
       );
 
-      const newContact = await fetch("http://localhost:3000/api/contacts", {
-        method: "POST",
-        headers: {
-          Cookie: `session_id=${sessionObject.token}`,
-        },
-        body: JSON.stringify({
-          name: "contato",
-          phone: "+5551999999999",
-          email: "contato@email.com",
-        }),
-      });
+      expect(newContactResponse.status).toBe(201);
 
-      const newContactResponseBody = await newContact.json();
+      const newContactResponseBody = await newContactResponse.json();
 
       const response = await fetch(
         `http://localhost:3000/api/contacts/${newContactResponseBody.id}`,
@@ -55,23 +46,9 @@ describe("DELETE /api/contacts/:id", () => {
     });
 
     test("With non-existent 'id'", async () => {
-      const newUser = await fetch("http://localhost:3000/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: "nome",
-          email: "delete2@email.com",
-          password: "senha",
-        }),
-      });
+      const newUser = await orchestrator.createUser();
 
-      const newUserResponseBody = await newUser.json();
-
-      const sessionObject = await orchestrator.createSession(
-        newUserResponseBody.id,
-      );
+      const sessionObject = await orchestrator.createSession(newUser.id);
 
       const response = await fetch(
         `http://localhost:3000/api/contacts/${randomUUID()}`,

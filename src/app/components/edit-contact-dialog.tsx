@@ -27,6 +27,7 @@ export default function EditContactDialog({ contact }) {
                 <X size={20} className="text-content-muted cursor-pointer" />
               </Dialog.Close>
             </Dialog.Title>
+            <Dialog.Description />
             <div className="px-4 pt-5">
               <EditContactForm setOpen={setOpen} contact={contact} />
             </div>

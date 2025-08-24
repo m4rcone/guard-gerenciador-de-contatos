@@ -8,23 +8,9 @@ beforeAll(async () => {
 
 describe("POST /api/contacts", () => {
   test("With valid session", async () => {
-    const newUser = await fetch("http://localhost:3000/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: "nome",
-        email: "nome@email.com",
-        password: "senha",
-      }),
-    });
+    const newUser = await orchestrator.createUser();
 
-    const newUserResponseBody = await newUser.json();
-
-    const sessionObject = await orchestrator.createSession(
-      newUserResponseBody.id,
-    );
+    const sessionObject = await orchestrator.createSession(newUser.id);
 
     const response = await fetch("http://localhost:3000/api/contacts", {
       method: "POST",
@@ -33,7 +19,7 @@ describe("POST /api/contacts", () => {
       },
       body: JSON.stringify({
         name: "contato",
-        phone: "+5551999999999",
+        phone: "(11) 98765-4321",
         email: "contato@email.com",
       }),
     });
@@ -44,9 +30,9 @@ describe("POST /api/contacts", () => {
 
     expect(responseBody).toEqual({
       id: responseBody.id,
-      user_id: newUserResponseBody.id,
+      user_id: newUser.id,
       name: "contato",
-      phone: "+5551999999999",
+      phone: "(11) 98765-4321",
       email: "contato@email.com",
       created_at: responseBody.created_at,
       updated_at: responseBody.updated_at,
@@ -63,11 +49,6 @@ describe("POST /api/contacts", () => {
       headers: {
         Cookie: `session_id=${nonexistentToken}`,
       },
-      body: JSON.stringify({
-        name: "contato",
-        phone: "+5551999999999",
-        email: "contato@email.com",
-      }),
     });
 
     expect(response.status).toBe(401);
@@ -87,23 +68,9 @@ describe("POST /api/contacts", () => {
       now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS),
     });
 
-    const newUser = await fetch("http://localhost:3000/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "/json",
-      },
-      body: JSON.stringify({
-        name: "nome",
-        email: "nome2@email.com",
-        password: "senha",
-      }),
-    });
+    const newUser = await orchestrator.createUser();
 
-    const newUserResponseBody = await newUser.json();
-
-    const sessionObject = await orchestrator.createSession(
-      newUserResponseBody.id,
-    );
+    const sessionObject = await orchestrator.createSession(newUser.id);
 
     jest.useRealTimers();
 
@@ -112,11 +79,6 @@ describe("POST /api/contacts", () => {
       headers: {
         Cookie: `session_id=${sessionObject.token}`,
       },
-      body: JSON.stringify({
-        name: "contato",
-        phone: "+5551999999999",
-        email: "contato@email.com",
-      }),
     });
 
     expect(response.status).toBe(401);

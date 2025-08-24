@@ -7,10 +7,19 @@ import session from "models/session";
 import user from "models/user";
 import contact from "models/contact";
 
+type SessionObject = {
+  id: string;
+  token: string;
+  expires_at: Date;
+  created_at: Date;
+  updated_at: Date;
+  user_id: string;
+};
+
 export const verifySession = cache(async () => {
   const sessionToken = (await cookies()).get("session_id")?.value;
 
-  let sessionObjectValid;
+  let sessionObjectValid: SessionObject;
 
   try {
     sessionObjectValid = await session.findOneValidByToken(sessionToken);

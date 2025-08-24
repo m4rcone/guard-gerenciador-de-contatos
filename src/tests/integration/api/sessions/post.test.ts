@@ -9,16 +9,8 @@ beforeAll(async () => {
 
 describe("POST /api/sessions", () => {
   test("With incorrect `email` but correct `password`", async () => {
-    await fetch("http://localhost:3000/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "applications/json",
-      },
-      body: JSON.stringify({
-        name: "nome",
-        email: "emailcorreto@email.com",
-        password: "senhacorreta",
-      }),
+    await orchestrator.createUser({
+      password: "senhacorreta",
     });
 
     const response = await fetch("http://localhost:3000/api/sessions", {
@@ -27,7 +19,7 @@ describe("POST /api/sessions", () => {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        email: "emailincorreto@email.com",
+        email: "email-incorreto@email.com",
         password: "senhacorreta",
       }),
     });
@@ -45,16 +37,8 @@ describe("POST /api/sessions", () => {
   });
 
   test("With correct `email` but incorrect `password`", async () => {
-    await fetch("http://localhost:3000/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "applications/json",
-      },
-      body: JSON.stringify({
-        name: "nome",
-        email: "emailcorreto2@email.com",
-        password: "senhacorreta",
-      }),
+    await orchestrator.createUser({
+      email: "email-correto@email.com",
     });
 
     const response = await fetch("http://localhost:3000/api/sessions", {
@@ -63,7 +47,7 @@ describe("POST /api/sessions", () => {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        email: "emailcorreto2@email.com",
+        email: "email-correto@email.com",
         password: "senhaincorreta",
       }),
     });
@@ -81,17 +65,7 @@ describe("POST /api/sessions", () => {
   });
 
   test("With incorrect `email` and incorrect `password`", async () => {
-    await fetch("http://localhost:3000/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "applications/json",
-      },
-      body: JSON.stringify({
-        name: "nome",
-        email: "emailcorreto3@email.com",
-        password: "senhacorreta",
-      }),
-    });
+    await orchestrator.createUser();
 
     const response = await fetch("http://localhost:3000/api/sessions", {
       method: "POST",
@@ -99,7 +73,7 @@ describe("POST /api/sessions", () => {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        email: "emailincorreto@email.com",
+        email: "email-incorreto@email.com",
         password: "senhaincorreta",
       }),
     });
@@ -117,19 +91,10 @@ describe("POST /api/sessions", () => {
   });
 
   test("With correct `email` and correct `password`", async () => {
-    const newUser = await fetch("http://localhost:3000/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "applications/json",
-      },
-      body: JSON.stringify({
-        name: "nome",
-        email: "emailcorreto4@email.com",
-        password: "senhacorreta",
-      }),
+    const newUser = await orchestrator.createUser({
+      email: "email-correto2@email.com",
+      password: "senhacorreta",
     });
-
-    const newUserResponseBody = await newUser.json();
 
     const response = await fetch("http://localhost:3000/api/sessions", {
       method: "POST",
@@ -137,7 +102,7 @@ describe("POST /api/sessions", () => {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        email: "emailcorreto4@email.com",
+        email: "email-correto2@email.com",
         password: "senhacorreta",
       }),
     });
@@ -152,7 +117,7 @@ describe("POST /api/sessions", () => {
       expires_at: responseBody.expires_at,
       created_at: responseBody.created_at,
       updated_at: responseBody.updated_at,
-      user_id: newUserResponseBody.id,
+      user_id: newUser.id,
     });
 
     const expiredAt = new Date(responseBody.expires_at).setMilliseconds(0);

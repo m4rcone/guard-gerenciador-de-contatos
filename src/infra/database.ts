@@ -26,6 +26,7 @@ async function getNewClient() {
     connectionString: process.env.DATABASE_URL,
     ssl: process.env.NODE_ENV === "production" ? true : false,
   });
+
   await client.connect();
 
   return client;

@@ -3,8 +3,6 @@ export async function signout() {
     method: "DELETE",
   });
 
-  console.log(response.status);
-
   const responseBody = await response.json();
 
   if (response.status !== 200) {

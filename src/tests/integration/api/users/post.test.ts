@@ -16,7 +16,7 @@ describe("POST /api/users", () => {
       body: JSON.stringify({
         name: "nome",
         email: "nome@email.com",
-        password: "senha",
+        password: "senhasegura",
       }),
     });
 
@@ -28,22 +28,9 @@ describe("POST /api/users", () => {
       id: responseBody.id,
       name: "nome",
       email: "nome@email.com",
-      password: responseBody.password,
       created_at: responseBody.created_at,
       updated_at: responseBody.updated_at,
     });
-
-    const correctPassword = await password.compare(
-      "senha",
-      responseBody.password,
-    );
-    const incorrectPassword = await password.compare(
-      "senha-incorreta",
-      responseBody.password,
-    );
-
-    expect(correctPassword).toBe(true);
-    expect(incorrectPassword).toBe(false);
   });
 
   test("With duplicated 'email'", async () => {
@@ -53,9 +40,9 @@ describe("POST /api/users", () => {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        name: "name",
+        name: "nome",
         email: "emailduplicado@email.com",
-        password: "senha",
+        password: "senhasegura",
       }),
     });
 
@@ -67,9 +54,9 @@ describe("POST /api/users", () => {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "name",
+        username: "nome",
         email: "emailduplicado@email.com",
-        password: "senha",
+        password: "senhasegura",
       }),
     });
 

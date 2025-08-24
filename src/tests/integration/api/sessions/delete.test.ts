@@ -36,23 +36,9 @@ describe("DELETE /api/sessions", () => {
       now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS),
     });
 
-    const newUser = await fetch("http://localhost:3000/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "/json",
-      },
-      body: JSON.stringify({
-        name: "nome",
-        email: "nome2@email.com",
-        password: "senha",
-      }),
-    });
+    const newUser = await orchestrator.createUser();
 
-    const newUserResponseBody = await newUser.json();
-
-    const sessionObject = await orchestrator.createSession(
-      newUserResponseBody.id,
-    );
+    const sessionObject = await orchestrator.createSession(newUser.id);
 
     jest.useRealTimers();
 
@@ -76,23 +62,9 @@ describe("DELETE /api/sessions", () => {
   });
 
   test("With valid session", async () => {
-    const newUser = await fetch("http://localhost:3000/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: "nome",
-        email: "nome@email.com",
-        password: "senha",
-      }),
-    });
+    const newUser = await orchestrator.createUser();
 
-    const newUserResponseBody = await newUser.json();
-
-    const sessionObject = await orchestrator.createSession(
-      newUserResponseBody.id,
-    );
+    const sessionObject = await orchestrator.createSession(newUser.id);
 
     const response = await fetch("http://localhost:3000/api/sessions", {
       method: "DELETE",

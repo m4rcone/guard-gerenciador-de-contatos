@@ -7,9 +7,9 @@ import { Dialog } from "radix-ui";
 import Button from "./ui/button";
 import Input from "./ui/input";
 import { CircleUser, CircleX, LoaderPinwheel } from "lucide-react";
+import { maskPhone } from "app/utils/mask-phone";
 
 export default function AddContactForm({ setOpen }) {
-  const [tooltip, setTooltip] = useState(false);
   const [formValues, setFormValues] = useState({
     name: "",
     phone: "",
@@ -18,7 +18,6 @@ export default function AddContactForm({ setOpen }) {
   });
 
   const [state, action, pending] = useActionState(addContact, undefined);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const router = useRouter();
 
@@ -35,23 +34,15 @@ export default function AddContactForm({ setOpen }) {
     const { name, value, files } = e.target;
     if (name === "avatar" && files && files[0]) {
       setFormValues((prev) => ({ ...prev, avatar: files[0].name }));
-    } else {
-      setFormValues((prev) => ({ ...prev, [name]: value }));
+      return;
     }
-  };
 
-  const handleMouseEnter = () => {
-    timeoutRef.current = setTimeout(() => {
-      setTooltip(true);
-    }, 7000); // 7 sec
-  };
-
-  const handleMouseLeave = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
+    if (name === "phone") {
+      setFormValues((prev) => ({ ...prev, [name]: maskPhone(value) }));
+      return;
     }
-    setTooltip(false);
+
+    setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -115,7 +106,9 @@ export default function AddContactForm({ setOpen }) {
         <Input
           id="phone"
           name="phone"
-          placeholder="Número de telefone"
+          placeholder="(11) 98765-4321"
+          type="tel"
+          maxLength={15}
           value={formValues.phone}
           onChange={handleChange}
         />
@@ -160,27 +153,13 @@ export default function AddContactForm({ setOpen }) {
           <p className="text-content-body text-sm">{state.errors.avatar}</p>
         </div>
       )}
-      {tooltip && (
-        <div className="flex justify-center">
-          <p className="text-accent-brand text-xs">
-            Tá esperando o quê? Boraa moeer!! 🚀
-          </p>
-        </div>
-      )}
       <div className="flex justify-end gap-3 p-3">
         <Dialog.Close asChild>
           <Button type="button" variant="tertiary" size="md">
             Cancelar
           </Button>
         </Dialog.Close>
-        <Button
-          type="submit"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          variant="primary"
-          size="md"
-          disabled={pending}
-        >
+        <Button type="submit" variant="primary" size="md" disabled={pending}>
           {pending ? <LoaderPinwheel className="animate-spin" /> : "Salvar"}
         </Button>
       </div>

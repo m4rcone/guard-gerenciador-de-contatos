@@ -9,41 +9,28 @@ beforeAll(async () => {
 describe("PATCH /api/contacts/:id", () => {
   describe("Authenticated user", () => {
     test("With existent 'id'", async () => {
-      const newUser = await fetch("http://localhost:3000/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const newUser = await orchestrator.createUser();
+
+      const sessionObject = await orchestrator.createSession(newUser.id);
+
+      const newContactResponse = await fetch(
+        "http://localhost:3000/api/contacts",
+        {
+          method: "POST",
+          headers: {
+            Cookie: `session_id=${sessionObject.token}`,
+          },
+          body: JSON.stringify({
+            name: "contato",
+            phone: "(11) 98765-4321",
+            email: "contato@email.com",
+          }),
         },
-        body: JSON.stringify({
-          name: "nome",
-          email: "existent-id@email.com",
-          password: "senha",
-        }),
-      });
-
-      expect(newUser.status).toBe(201);
-
-      const newUserResponseBody = await newUser.json();
-
-      const sessionObject = await orchestrator.createSession(
-        newUserResponseBody.id,
       );
 
-      const newContact = await fetch("http://localhost:3000/api/contacts", {
-        method: "POST",
-        headers: {
-          Cookie: `session_id=${sessionObject.token}`,
-        },
-        body: JSON.stringify({
-          name: "contato",
-          phone: "+5551999999999",
-          email: "contato@email.com",
-        }),
-      });
+      expect(newContactResponse.status).toBe(201);
 
-      expect(newContact.status).toBe(201);
-
-      const newContactResponseBody = await newContact.json();
+      const newContactResponseBody = await newContactResponse.json();
 
       const response = await fetch(
         `http://localhost:3000/api/contacts/${newContactResponseBody.id}`,
@@ -54,7 +41,7 @@ describe("PATCH /api/contacts/:id", () => {
           },
           body: JSON.stringify({
             name: "nome atualizado",
-            phone: "+5551888888888",
+            phone: "(11) 12345-6789",
             email: "email-atualizado@email.com",
           }),
         },
@@ -66,9 +53,9 @@ describe("PATCH /api/contacts/:id", () => {
 
       expect(responseBody).toEqual({
         id: responseBody.id,
-        user_id: newUserResponseBody.id,
+        user_id: newUser.id,
         name: "nome atualizado",
-        phone: "+5551888888888",
+        phone: "(11) 12345-6789",
         email: "email-atualizado@email.com",
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
@@ -79,23 +66,9 @@ describe("PATCH /api/contacts/:id", () => {
     });
 
     test("With non-existent 'id'", async () => {
-      const newUser = await fetch("http://localhost:3000/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: "nome",
-          email: "non-existent-id@email.com",
-          password: "senha",
-        }),
-      });
+      const newUser = await orchestrator.createUser();
 
-      const newUserResponseBody = await newUser.json();
-
-      const sessionObject = await orchestrator.createSession(
-        newUserResponseBody.id,
-      );
+      const sessionObject = await orchestrator.createSession(newUser.id);
 
       const response = await fetch(
         `http://localhost:3000/api/contacts/${randomUUID()}`,
@@ -106,7 +79,7 @@ describe("PATCH /api/contacts/:id", () => {
           },
           body: JSON.stringify({
             name: "nome atualizado",
-            phone: "+5551888888888",
+            phone: "(11) 12345-6789",
             email: "email-atualizado@email.com",
           }),
         },
@@ -128,7 +101,7 @@ describe("PATCH /api/contacts/:id", () => {
   describe("Unauthenticated user", () => {
     test("With non-existent token", async () => {
       const nonexistentToken =
-        "0ba39e01897bb08920784c9c29c990bfd84e158d51ff93e93f327275559e0f4306cc39bcf2275bc70cb158057730050b";
+        "0ba39e01897bb08920784c9c29c990bfd84e158d11ff93e93f327275559e0f4306cc39bcf2275bc70cb158057730050b";
 
       const response = await fetch(
         `http://localhost:3000/api/contacts/${randomUUID()}`,

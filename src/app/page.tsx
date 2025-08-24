@@ -53,7 +53,7 @@ export default async function Page() {
               </div>
             </div>
           </div>
-          <div className="scrollbar-none flex flex-1 gap-12 overflow-y-auto">
+          <div className="scrollbar-custom flex flex-1 gap-12 overflow-y-auto">
             <AlphabetFilter />
             <DataTable contacts={contacts} />
           </div>

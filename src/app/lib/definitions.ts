@@ -36,8 +36,10 @@ export const AddContactFormSchema = z.object({
   name: z.string().min(1, { message: "Por favor, insira o nome." }).trim(),
   phone: z
     .string()
-    .max(20, { message: "Máximo 20 caracteres." })
+    .min(14, { message: "Por favor, insira DDD + número." })
+    .max(15, { message: "Telefone muito longo." })
     .trim()
+    .or(z.literal(""))
     .optional(),
   email: z
     .email({ message: "Por favor, insira um e-mail válido." })
@@ -51,8 +53,10 @@ export const EditContactFormSchema = z.object({
   name: z.string().min(1, { message: "Por favor, insira o nome." }).trim(),
   phone: z
     .string()
-    .max(20, { message: "Máximo 20 caracteres." })
+    .min(14, { message: "Por favor, insira DDD + número." })
+    .max(15, { message: "Telefone muito longo." })
     .trim()
+    .or(z.literal(""))
     .optional(),
   email: z
     .email({ message: "Por favor, insira um e-mail válido." })

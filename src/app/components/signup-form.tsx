@@ -122,7 +122,7 @@ export default function SignupForm() {
           <p className="text-content-body text-sm">{state.message}</p>
         </div>
       )}
-      <div className="mt-[68px] flex justify-end">
+      <div className="mt-9 flex justify-end">
         <Button type="submit" variant="primary" size="md" disabled={pending}>
           {pending ? (
             <LoaderPinwheel className="animate-spin" />

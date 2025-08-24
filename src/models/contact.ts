@@ -2,7 +2,7 @@ import database from "infra/database";
 import { NotFoundError } from "infra/errors";
 import { randomUUID } from "node:crypto";
 
-type ContactInputValues = {
+export type ContactInputValues = {
   id?: string;
   name?: string;
   phone?: string;

@@ -27,4 +27,9 @@
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
+
+  .scrollbar-custom {
+    scrollbar-width: thin;
+    scrollbar-color: theme(--color-accent-brand) transparent;
+  }
 }
