@@ -1,5 +1,4 @@
 import controller from "infra/controller";
-import password from "models/password";
 import user from "models/user";
 import { NextRequest, NextResponse } from "next/server";
 

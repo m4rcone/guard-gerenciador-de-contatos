@@ -1,4 +1,3 @@
-import session from "models/session";
 import orchestrator from "tests/orchestrator";
 
 beforeAll(async () => {

@@ -4,10 +4,12 @@ import Button from "./components/ui/button";
 import AlphabetFilter from "./components/alphabet-filter";
 import SearchInput from "./components/search-input";
 import DataTable from "./components/data-table";
-import { CircleUserRound, Lock, Settings } from "lucide-react";
+import { CircleUserRound, Settings } from "lucide-react";
 import AddContactDialog from "./components/add-contact-dialog";
 import Link from "next/link";
 import SignoutButton from "./components/signout-button";
+import { VisibilityProvider } from "./context/visibility-context";
+import PasswordDialogWrapper from "./components/password-dialog-wrapper";
 
 export default async function Page() {
   const user = await getUser();
@@ -38,26 +40,27 @@ export default async function Page() {
         </div>
       </div>
       <div className="bg-background-secondary h-full w-full rounded-[40px] p-[40px] lg:mr-12">
-        <div className="flex h-full flex-col gap-8">
-          <div>
-            <div className="flex flex-wrap items-center justify-between gap-4 lg:flex-nowrap lg:gap-0">
-              <h2 className="text-content-primary text-2xl font-bold lg:flex-1">
-                Lista de contatos
-              </h2>
-              <div className="flex flex-wrap items-center gap-2.5 lg:flex-1 lg:flex-nowrap">
-                <SearchInput />
-                <AddContactDialog />
-                <Button variant="tertiary" size="md">
-                  <Lock size={16} />
-                </Button>
+        <VisibilityProvider>
+          <div className="flex h-full flex-col gap-8">
+            <div>
+              <div className="flex flex-wrap items-center justify-between gap-4 lg:flex-nowrap lg:gap-0">
+                <h2 className="text-content-primary text-2xl font-bold lg:flex-1">
+                  Lista de contatos
+                </h2>
+                <div className="flex flex-wrap items-center gap-2.5 lg:flex-1 lg:flex-nowrap">
+                  <SearchInput />
+                  <AddContactDialog />
+                  {/* No lugar do Button vai ter outro componente */}
+                  <PasswordDialogWrapper contacts={contacts} />
+                </div>
               </div>
             </div>
+            <div className="scrollbar-custom flex flex-1 gap-12 overflow-y-auto">
+              <AlphabetFilter />
+              <DataTable contacts={contacts} />
+            </div>
           </div>
-          <div className="scrollbar-custom flex flex-1 gap-12 overflow-y-auto">
-            <AlphabetFilter />
-            <DataTable contacts={contacts} />
-          </div>
-        </div>
+        </VisibilityProvider>
       </div>
     </div>
   );

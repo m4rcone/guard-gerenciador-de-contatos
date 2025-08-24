@@ -4,7 +4,6 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import session from "models/session";
 import user, { type UserInputValues } from "models/user";
 import { faker } from "@faker-js/faker";
-import contact, { ContactInputValues } from "models/contact";
 
 async function clearDatabase() {
   await database.query(
